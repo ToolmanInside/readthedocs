@@ -4,7 +4,7 @@ Attack 03
 
 **Contract Name**
 
-ERC827Token（test745.sol）
+ERC827Token
 
 **Contract Address**
 
