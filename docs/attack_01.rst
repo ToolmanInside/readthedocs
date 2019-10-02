@@ -1,5 +1,5 @@
 #########
-Attack_01
+Attack 01
 #########
 
 **Contract Name**
@@ -24,7 +24,7 @@ SaiProxy
 
 **Victim Function**
 
-SaiProxy
+``SaiProxy``
 
 **Attack Mechanisim**
 

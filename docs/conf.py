@@ -56,7 +56,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Solidity'
+project = 'Clairvoyance'
 copyright = '2019, USTC'
 
 # The version info for the project you're documenting, acts as replacement for
