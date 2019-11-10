@@ -20,16 +20,11 @@ We have implemented our approach and compared Clairvoyance with three state-of-t
 
 In this website, we sample some vulnerable smart contract code which are pointed out by Clairvoyance and show our exploits. Each exploit consists of the metadata of contract (e.g. transaction count, ethers it involved), the exploit code and concise explanations. Exploits will be continuously updated in the future.
 
+For additional evaluation and explanations on vulnerabilities, please see `Additional evaluations <https://toolman-demo.readthedocs.io/en/latest/evaluations.html>`_.
+
 .. toctree::
     :maxdepth: 2
 
-    ppts.rst
-    attack_01.rst
-    attack_02.rst
-    attack_03.rst
-    attack_04.rst
-    attack_05.rst
-    attack_06.rst
-    attack_07.rst
-    attack_08.rst
-    attack_09.rst
+    evaluations.rst
+    exploits.rst
+
