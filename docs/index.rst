@@ -28,13 +28,26 @@ Response to comments:
 
 The 76 real world vulnerabilities found by Clairvoyance is published in `Google Drive <https://drive.google.com/file/d/1wpDYHV_velfbA-Y_pPH79gT_ljiQxoKR/view>`_. And we provide 20 influential smart contract expolits, all of which are programed by our expert and tested by `Remix IDE <https://remix.ethereum.org/>`_. They are listed in the followings.
 
-2.  **Response to reviewer's on the implicit evaluations**
-
-For additional evaluation and explanations on vulnerabilities, please see `Additional evaluations <https://toolman-demo.readthedocs.io/en/latest/evaluations.html>`_.
-
 .. toctree::
     :maxdepth: 2
 
-    evaluations.rst
     exploits.rst
+
+
+2.  **Response to reviewer's on the implicit evaluations**
+
+In our paper, we decribe the capability of detection unique true positive vulnerabilities by showing a venn graph.
+
+.. image:: venn.png
+    :width: 400px
+    :align: center
+
+
+Obviously, our proposed tool, Clarivoyance, can cover most real vulnerability except 28 ones found by other tools (17 of Slither, 11 of Securify). The reasons can be categorized into three: 
+
+1.  Inheritable *internal* vulnerable function. Solidity function use functional modifiers to limit the viewability of outer callers. As one of them, *internal* limit that the function can only be seen by functions have inheritable relations with. If a vulnerable function has such modifier, it can only be hacked theoretically. Because the attacked function must inheritate from the attack one, and we believe this means a trust relationship. So this case is exclued from Clarivoyance's capability.
+2.  Misusing PPTs. 
+3.  Bypassable permission control.
+
+
 
