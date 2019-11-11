@@ -20,9 +20,9 @@ We have implemented our approach and compared Clairvoyance with three state-of-t
 
 In this website, we sample some vulnerable smart contract code which are pointed out by Clairvoyance and show our exploits. Each exploit consists of the metadata of contract (e.g. transaction count, ethers it involved), the exploit code and concise explanations. Exploits will be continuously updated in the future.
 
-.. role:: red
 
-:red:`Response to comments`:
+Response to comments:
+---------------------
 
 1.  Response to reviewer C’s on 74 TPs of Clairvoyance:
 The 76 real world vulnerabilities found by Clairvoyance is published in `Google Drive <https://drive.google.com/file/d/1wpDYHV_velfbA-Y_pPH79gT_ljiQxoKR/view>`_.
