@@ -6,7 +6,8 @@ Clairvoyance
     :alt: Solidity logo
     :align: center
 
-:ref:`Response to comments`
+.. note::
+    For responses, please see Response_.
 
 Static program analysis still plays a key role in detecting and fixing vulnerabilities (e.g., reentrancy) in smart contracts. However, the existing static analyzers still suffer from two major limitations: 
 
@@ -22,6 +23,7 @@ We have implemented our approach and compared Clairvoyance with three state-of-t
 
 In this website, we sample some vulnerable smart contract code which are pointed out by Clairvoyance and show our exploits. Each exploit consists of the metadata of contract (e.g. transaction count, ethers it involved), the exploit code and concise explanations. Exploits will be continuously updated in the future.
 
+.. _Response:
 
 Response to comments:
 ---------------------
