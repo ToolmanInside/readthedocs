@@ -31,7 +31,26 @@ The 76 real world vulnerabilities found by Clairvoyance is published in `Google 
 .. toctree::
     :maxdepth: 2
 
-    exploits.rst
+    attack_01.rst
+    attack_02.rst
+    attack_03.rst
+    attack_04.rst
+    attack_05.rst
+    attack_06.rst
+    attack_07.rst
+    attack_08.rst
+    attack_09.rst
+    attack_10.rst
+    attack_11.rst
+    attack_12.rst
+    attack_13.rst
+    attack_14.rst
+    attack_15.rst
+    attack_16.rst
+    attack_17.rst
+    attack_18.rst
+    attack_19.rst
+    attack_20.rst
 
 
 2.  **Response to reviewer's on the implicit evaluations**
