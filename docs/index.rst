@@ -6,6 +6,8 @@ Clairvoyance
     :alt: Solidity logo
     :align: center
 
+:ref:`Response to comments`
+
 Static program analysis still plays a key role in detecting and fixing vulnerabilities (e.g., reentrancy) in smart contracts. However, the existing static analyzers still suffer from two major limitations: 
 
 - lack of intra-contract analysis
