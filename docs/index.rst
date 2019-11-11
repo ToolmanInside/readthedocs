@@ -25,7 +25,9 @@ Response to comments:
 ---------------------
 
 1.  Response to reviewer C’s on 74 TPs of Clairvoyance:
+
 The 76 real world vulnerabilities found by Clairvoyance is published in `Google Drive <https://drive.google.com/file/d/1wpDYHV_velfbA-Y_pPH79gT_ljiQxoKR/view>`_.
+
 2.  For additional evaluation and explanations on vulnerabilities, please see `Additional evaluations <https://toolman-demo.readthedocs.io/en/latest/evaluations.html>`_.
 
 .. toctree::
