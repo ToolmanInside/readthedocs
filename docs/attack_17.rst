@@ -1,5 +1,5 @@
 #########
-Attack 07
+Attack 17
 #########
 
 **Contract Name**
@@ -8,15 +8,15 @@ BeetBuck
 
 **Contract Address**
 
-0x1ff6f142ebdce220d8dd85eb31dcb92a47690846
+0x7dcde80b9e6eaac35cd5e0225f17cf8a418314cc
 
 **Transaction Count**
 
-1
+2
 
 **Invovled Ethers**
 
-0.1 Ethers
+0.01 Ethers
 
 **Length of the Call Chain**
 

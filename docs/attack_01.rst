@@ -24,7 +24,7 @@ SaiProxy
 
 **Victim Function**
 
-``SaiProxy``
+``lock``
 
 **Attack Mechanisim**
 

