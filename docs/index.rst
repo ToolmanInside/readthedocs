@@ -24,11 +24,13 @@ In this website, we sample some vulnerable smart contract code which are pointed
 Response to comments:
 ---------------------
 
-1.  **Response to reviewer C’s on 74 TPs of Clairvoyance:**
+1.  **Response to reviewer's on 74 TPs of Clairvoyance**
 
-The 76 real world vulnerabilities found by Clairvoyance is published in `Google Drive <https://drive.google.com/file/d/1wpDYHV_velfbA-Y_pPH79gT_ljiQxoKR/view>`_.
+The 76 real world vulnerabilities found by Clairvoyance is published in `Google Drive <https://drive.google.com/file/d/1wpDYHV_velfbA-Y_pPH79gT_ljiQxoKR/view>`_. And we provide 20 influential smart contract expolits, all of which are programed by our expert and tested by `Remix IDE <https://remix.ethereum.org/>`_. They are listed in the followings.
 
-2.  For additional evaluation and explanations on vulnerabilities, please see `Additional evaluations <https://toolman-demo.readthedocs.io/en/latest/evaluations.html>`_.
+2.  **Response to reviewer's on the implicit evaluations**
+
+For additional evaluation and explanations on vulnerabilities, please see `Additional evaluations <https://toolman-demo.readthedocs.io/en/latest/evaluations.html>`_.
 
 .. toctree::
     :maxdepth: 2
