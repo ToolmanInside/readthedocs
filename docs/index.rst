@@ -36,36 +36,49 @@ Please see `FP Venn Diagram <https://toolman-demo.readthedocs.io/en/latest/fp_ve
 
 We publish the dataset which has been used in our empirical study and evaluations in `empirical data <https://drive.google.com/file/d/1JO1zd5JquDuAeWWh3uEvcsh8ItSx8jBW/view?usp=sharing>`_ and `evaluation data <https://drive.google.com/file/d/1WeU3TjdAn40cOyU51M7mHzF7KOHLC4Y6/view?usp=sharing>`_
 
-3.  
+3.  **F1 Score of Tools**
+
+To compare the tools used in experiment and assess their effectiveness intuitively, we calculate the f1 scores and list them in the following table. 
+
++-----------+----------+----------+----------+--------------+
++-----------|--Slither-|--Oyente--|-Securify-|-Clairvoyance-|
++-----------+----------+----------+----------+--------------+
+|-Precision-|--1.85%---|--14.28%--|--0.49%---|----73.80%----|
++-----------+----------+----------+----------+--------------+
+|--Recall---|--2.45%---|---3.27%--|--2.45%---|----100.0%----|
++-----------+----------+----------+----------+--------------+
+|--F1 Score-|--2.10%---|--5.32%---|--0.81%---|----84.92%----|
++-----------+----------+----------+----------+--------------+
+
 
 .. 1.  **Response to reviewer's on 74 TPs of Clairvoyance**
 
 .. The 76 real world vulnerabilities found by Clairvoyance is published in `Google Drive <https://drive.google.com/file/d/1wpDYHV_velfbA-Y_pPH79gT_ljiQxoKR/view>`_. And we provide 20 influential smart contract expolits, all of which are programed by our expert and tested by `Remix IDE <https://remix.ethereum.org/>`_. They are listed in the followings.
 
-.. .. toctree::
-..     :maxdepth: 2
+.. toctree::
+    :maxdepth: 1
 
-..     fp_venndiagram.rst
-..     attack_01.rst
-..     attack_02.rst
-..     attack_03.rst
-..     attack_04.rst
-..     attack_05.rst
-..     attack_06.rst
-..     attack_07.rst
-..     attack_08.rst
-..     attack_09.rst
-..     attack_10.rst
-..     attack_11.rst
-..     attack_12.rst
-..     attack_13.rst
-..     attack_14.rst
-..     attack_15.rst
-..     attack_16.rst
-..     attack_17.rst
-..     attack_18.rst
-..     attack_19.rst
-..     attack_20.rst
+    fp_venndiagram.rst
+    attack_01.rst
+    attack_02.rst
+    attack_03.rst
+    attack_04.rst
+    attack_05.rst
+    attack_06.rst
+    attack_07.rst
+    attack_08.rst
+    attack_09.rst
+    attack_10.rst
+    attack_11.rst
+    attack_12.rst
+    attack_13.rst
+    attack_14.rst
+    attack_15.rst
+    attack_16.rst
+    attack_17.rst
+    attack_18.rst
+    attack_19.rst
+    attack_20.rst
 
 
 
