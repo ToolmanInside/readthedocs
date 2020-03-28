@@ -41,13 +41,13 @@ We publish the dataset which has been used in our empirical study and evaluation
 To compare the tools used in experiment and assess their effectiveness intuitively, we calculate the f1 scores and list them in the following table. 
 
 +-----------+----------+----------+----------+--------------+
-+-----------|--Slither-|--Oyente--|-Securify-|-Clairvoyance-|
++-----------|  Slither |  Oyente  | Securify | Clairvoyance |
 +-----------+----------+----------+----------+--------------+
-|-Precision-|--1.85%---|--14.28%--|--0.49%---|----73.80%----|
+| Precision |  1.85%   |  14.28%  |  0.49%   |    73.80%    |
 +-----------+----------+----------+----------+--------------+
-|--Recall---|--2.45%---|---3.27%--|--2.45%---|----100.0%----|
+|  Recall   |  2.45%   |   3.27%  |  2.45%   |    100.0%    |
 +-----------+----------+----------+----------+--------------+
-|--F1 Score-|--2.10%---|--5.32%---|--0.81%---|----84.92%----|
+| F1 Score  |  2.10%   |   5.32%  |  0.81%   |    84.92%    |
 +-----------+----------+----------+----------+--------------+
 
 
