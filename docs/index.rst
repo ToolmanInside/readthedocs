@@ -34,7 +34,7 @@ Please see `FP Venn Diagram <https://toolman-demo.readthedocs.io/en/latest/fp_ve
 
 2.  **Our Dataset**
 
-We publish the dataset which has been used in our empirical study and evaluations in `empirical data <https://drive.google.com/file/d/1JO1zd5JquDuAeWWh3uEvcsh8ItSx8jBW/view?usp=sharing>`_ and `evaluation data <https://drive.google.com/file/d/1WeU3TjdAn40cOyU51M7mHzF7KOHLC4Y6/view?usp=sharing>`_
+We publish the dataset which has been used in our empirical study and evaluations in `empirical study data <https://drive.google.com/file/d/1JO1zd5JquDuAeWWh3uEvcsh8ItSx8jBW/view?usp=sharing>`_ (11714 contracts) and `evaluation data <https://drive.google.com/file/d/1WeU3TjdAn40cOyU51M7mHzF7KOHLC4Y6/view?usp=sharing>`_ (17770 contracts).
 
 3.  **F1 Score of Tools**
 
