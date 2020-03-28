@@ -6,7 +6,7 @@ FPs Venn Diagram
 
 **Venn of PPT1:**
 
-.. image::fp_venn/PPT1.png
+.. image:: /fp_venn/PPT1.png
     :width: 200px
     :alt: PPT1 Venn
     :align: center
