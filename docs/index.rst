@@ -34,7 +34,7 @@ Please see `FP Venn Diagram <https://toolman-demo.readthedocs.io/en/latest/fp_ve
 
 2.  **Our Dataset**
 
-We publish the dataset which has been used in our empirical study and evaluations in `empirical study data <https://drive.google.com/file/d/1JO1zd5JquDuAeWWh3uEvcsh8ItSx8jBW/view?usp=sharing>`_ (11714 contracts) and `evaluation data <https://drive.google.com/file/d/1WeU3TjdAn40cOyU51M7mHzF7KOHLC4Y6/view?usp=sharing>`_ (17770 contracts). Both dataset are crawled from Ethereum block chain by accessing the Etherscan API with smart contract deployment addresses. The addresses are supported by `Google BigQuery public dataset <https://cloud.google.com/blog/products/data-analytics/ethereum-bigquery-public-dataset-smart-contract-analytics>`_. The datasets with 11714 and 17770 contracts are small parts of it.
+We publish the dataset which has been used in our empirical study and evaluations in `empirical study data <https://drive.google.com/file/d/1JO1zd5JquDuAeWWh3uEvcsh8ItSx8jBW/view?usp=sharing>`_ (11714 contracts) and `evaluation data <https://drive.google.com/file/d/1WeU3TjdAn40cOyU51M7mHzF7KOHLC4Y6/view?usp=sharing>`_ (17770 contracts). Both dataset are crawled from Ethereum block chain by accessing the Etherscan API with smart contract deployment addresses. The addresses are supported by `Google BigQuery public dataset <https://cloud.google.com/blog/products/data-analytics/ethereum-bigquery-public-dataset-smart-contract-analytics>`_.
 
 3.  **F1 Score of Tools**
 
