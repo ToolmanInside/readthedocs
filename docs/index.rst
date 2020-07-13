@@ -58,7 +58,10 @@ To compare the tools used in experiment and assess their effectiveness intuitive
 Artifacts:
 ----------
 
-In considieration of reproducibility, and to ensure our work is under supervision of both reviewers and readers, the source code is open-sourced at `Google Drive <https://drive.google.com/file/d/1UAorwSCJvJRQqZiE_5J3hNRc6HCde2Lm/view>`_. We also provide brief installation introductions in README.doc. 
+In considieration of reproducibility, the source code is open-sourced at `Google Drive <https://drive.google.com/file/d/1UAorwSCJvJRQqZiE_5J3hNRc6HCde2Lm/view>`_. We also provide brief installation introductions in README.doc. 
+
+Precisions and Case Studys:
+------------------------
 
 .. toctree::
     :maxdepth: 1
