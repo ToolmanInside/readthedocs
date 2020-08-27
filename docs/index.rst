@@ -55,10 +55,12 @@ To compare the tools used in experiment and assess their effectiveness intuitive
 
 .. The 76 real world vulnerabilities found by Clairvoyance is published in `Google Drive <https://drive.google.com/file/d/1wpDYHV_velfbA-Y_pPH79gT_ljiQxoKR/view>`_. And we provide 20 influential smart contract expolits, all of which are programed by our expert and tested by `Remix IDE <https://remix.ethereum.org/>`_. They are listed in the followings.
 
-Artifacts:
+Online Service:
 ----------
 
-In considieration of reproducibility, the source code is open-sourced at `Google Drive <https://drive.google.com/file/d/1UAorwSCJvJRQqZiE_5J3hNRc6HCde2Lm/view>`_. We also provide brief installation introductions in README.doc. 
+.. In considieration of reproducibility, the source code is open-sourced at `Google Drive <https://drive.google.com/file/d/1UAorwSCJvJRQqZiE_5J3hNRc6HCde2Lm/view>`_. We also provide brief installation introductions in README.doc. 
+
+We provide online detection service in http://101.132.188.14:8080/blank.html. For detection usage, please paste your suspicious smart contract code into the edit area. The detection process will start if you press the "go" button. The report of vulnerabilities will be listed.  
 
 Precisions and Case Studys:
 ------------------------
