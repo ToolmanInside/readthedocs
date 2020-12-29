@@ -60,7 +60,7 @@ Online Service:
 
 .. In considieration of reproducibility, the source code is open-sourced at `Google Drive <https://drive.google.com/file/d/1UAorwSCJvJRQqZiE_5J3hNRc6HCde2Lm/view>`_. We also provide brief installation introductions in README.doc. 
 
-We provide online detection service in http://101.132.188.14:8080/blank.html. For detection usage, please paste your suspicious smart contract code into the edit area. The detection process will start if you press the "go" button. The report of vulnerabilities will be listed.  
+We provide online detection service in http://47.100.164.141:8080/. For detection usage, please paste your suspicious smart contract code into the edit area. The detection process will start if you press the "go" button. The report of vulnerabilities will be listed.  
 
 Precisions and Case Studys:
 ------------------------
